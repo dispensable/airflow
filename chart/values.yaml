@@ -3542,6 +3542,8 @@ logs:
   #   sizeLimit: 1Gi
   #   medium: Memory
 
+  remoteLogging: false
+
   persistence:
     # Enable persistent volume for storing logs
     enabled: false

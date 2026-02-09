@@ -473,13 +473,13 @@ spec:
         - name: logs
           persistentVolumeClaim:
             claimName: {{ template "airflow_logs_volume_claim" . }}
-  {{- else if not $persistence }}
+  {{- else if or (not $persistence) .Values.logs.remotLogging }}
         - name: logs
           emptyDir: {{- toYaml (default (dict) .Values.logs.emptyDirConfig) | nindent 12 }}
   {{- end }}
-  {{- if and $persistence (or (not .Values.logs.persistence.enabled) .Values.workers.volumeClaimTemplates) }}
+  {{- if and $persistence (or (and (not .Values.logs.persistence.enabled) (not .Values.logs.remotLogging)) .Values.workers.volumeClaimTemplates) }}
   volumeClaimTemplates:
-    {{- if not .Values.logs.persistence.enabled }}
+    {{- if and (not .Values.logs.persistence.enabled) (not .Values.logs.remotLogging) }}
     - apiVersion: v1
       kind: PersistentVolumeClaim
       metadata:
